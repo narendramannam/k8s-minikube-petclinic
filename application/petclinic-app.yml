@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment              
+metadata:
+  name: petclinic    
+  labels:                     
+    app: petclinic
+spec:
+  replicas: 1                 
+  selector:
+    matchLabels:              
+      app: petclinic
+  template:                   
+    metadata:
+      labels:                 
+        app: petclinic
+    spec:                     
+      containers:
+      - name: petclinic
+        image: narendramannam/petclinic:latest
+        imagePullPolicy: Never
+        ports:
+          - name: http
+            containerPort: 8080 
+        resources:
+          limits:
+            cpu: 0.5
+            memory: "500Mi"
+        env:                  
+        - name: SPRING_DATASOURCE_USERNAME  
+          value: "root"
+          # valueFrom:     
+          #   secretKeyRef:
+          #     name: mysql-app
+          #     key: username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-root
+              key: password
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            secretKeyRef:
+              name: mysql-datasource-url
+              key: url
